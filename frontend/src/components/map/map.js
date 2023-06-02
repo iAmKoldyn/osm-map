@@ -6,81 +6,80 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
 
+
 const Map = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [markers, setMarkers] = useState([]);
+    const [marker, setMarker] = useState(null);
     const [labelPosition, setLabelPosition] = useState(null);
     const [showLabel, setShowLabel] = useState(false);
+    const [zoom, setZoom] = useState(0);
+    const [center, setCenter] = useState([20, 15]);
+    const mapRef = React.useRef(null);
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const savedMarkers = params.get('markers');
-        if (savedMarkers) {
-            setMarkers(JSON.parse(savedMarkers));
+        const hash = location.hash.replace('#', '');
+        const parts = hash.split('/');
+        if (parts.length === 3 && parts[0] === 'map') {
+            setZoom(Number(parts[1]));
+            setCenter([Number(parts[2]), Number(parts[3])]);
         }
-    }, [location.search]);
+    }, [location.hash]);
 
     const MapEvents = () => {
         const map = useMapEvents({
             click: (e) => {
-                const newMarker = e.latlng;
-                setMarkers((oldMarkers) => {
-                    const updatedMarkers = [...oldMarkers, newMarker];
-                    navigate(`?markers=${JSON.stringify(updatedMarkers)}`);
-                    return updatedMarkers;
-                });
+                setMarker(e.latlng);
+                navigate(`#map=${map.getZoom()}/${e.latlng.lat}/${e.latlng.lng}`);
             },
             mousemove: (e) => {
                 setLabelPosition(e.latlng);
             },
-            dblclick: () => {
-                setShowLabel(!showLabel);
+            zoomend: () => {
+                setZoom(map.getZoom());
+                navigate(`#map=${map.getZoom()}/${center[0]}/${center[1]}`);
             },
-            map: {
-                whenReady: (map) => {
-                    L.latlngGraticule({
-                        font: '12px Sans-Serif',
-                        color: '#333',
-                        opacity: 0.8,
-                        showLabel: true,
-                        zoomInterval: [
-                            {start: 2, end: 3, interval: 30},
-                            {start: 4, end: 4, interval: 10},
-                            {start: 5, end: 7, interval: 5},
-                            {start: 8, end: 10, interval: 1}
-                        ]
-                    }).addTo(map);
-                }
-            }
+            moveend: () => {
+                setCenter([map.getCenter().lat, map.getCenter().lng]);
+                navigate(`#map=${map.getZoom()}/${map.getCenter().lat}/${map.getCenter().lng}`);
+            },
         });
+
         return null;
     };
 
     return (
         <MapContainer
             className="map-container"
-            center={[-46, -104]}
-            zoom={0}
+            center={center}
+            zoom={zoom}
             scrollWheelZoom={true}
+            whenCreated={(mapInstance) => {
+                mapRef.current = mapInstance;
+            }}
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='&copy; <a href "http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {markers.map((position, idx) =>
-                <Marker key={idx} position={position}>
-                    {(showLabel && position === markers[markers.length - 1]) && (
-                        <Popup>Lat: {position.lat}, Lng: {position.lng}</Popup>
-                    )}
-                </Marker>
-            )}
-            {labelPosition && showLabel && (
-                <Marker position={labelPosition}>
-                    <Popup>Lat: {labelPosition.lat}, Lng: {labelPosition.lng}</Popup>
-                </Marker>
-            )}
             <MapEvents />
+            {marker && (
+                <Marker
+                    position={marker}
+                    eventHandlers={{
+                        dblclick: () => {
+                            setMarker(null);
+                        },
+                    }}
+                >
+                    <Popup>A pretty CSS3 popup. <br /> Easily customizable.</Popup>
+                </Marker>
+            )}
+            {showLabel && labelPosition && (
+                <Marker position={labelPosition}>
+                    <Popup>{`${labelPosition.lat.toFixed(2)}, ${labelPosition.lng.toFixed(2)}`}</Popup>
+                </Marker>
+            )}
         </MapContainer>
     );
 };

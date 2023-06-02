@@ -1,4 +1,7 @@
 .map-container {
-    height: 800px;
-    width: 1400px;
+    height: 100vh;
+}
+
+.leaflet-attribution-flag {
+    display: none !important;
 }

@@ -13,8 +13,8 @@ const Map = () => {
     const [marker, setMarker] = useState(null);
     const [labelPosition, setLabelPosition] = useState(null);
     const [showLabel, setShowLabel] = useState(false);
-    const [zoom, setZoom] = useState(13);
-    const [center, setCenter] = useState([2,-18, 128]);
+    const [zoom, setZoom] = useState(0);
+    const [center, setCenter] = useState([20, 15]);
     const mapRef = React.useRef(null);
 
     useEffect(() => {

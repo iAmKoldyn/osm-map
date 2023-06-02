@@ -5,3 +5,7 @@
 .leaflet-attribution-flag {
     display: none !important;
 }
+
+.leaflet-top.leaflet-left {
+    display: none;
+}

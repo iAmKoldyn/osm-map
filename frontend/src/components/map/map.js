@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-graticule';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import {MapContainer, Marker, Popup, useMapEvents, ZoomControl} from 'react-leaflet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
-
+import Layers from "./layers";
+import markerIcon from '../../assets/images/marker-icon.png';
+import markerIcon2X from '../../assets/images/marker-icon-2x.png';
+import markerShadow from '../../assets/images/marker-shadow.png';
 
 const Map = () => {
     const navigate = useNavigate();
@@ -25,6 +28,20 @@ const Map = () => {
             setCenter([Number(parts[2]), Number(parts[3])]);
         }
     }, [location.hash]);
+
+    const defaultMarkerIcon = new L.Icon({
+        iconUrl: markerIcon,
+        iconRetinaUrl: markerIcon2X,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowUrl: markerShadow,
+        shadowSize: [41, 41],
+        shadowAnchor: [12, 41],
+    });
+
+    L.Marker.prototype.options.icon = defaultMarkerIcon;
 
     const MapEvents = () => {
         const map = useMapEvents({
@@ -58,10 +75,8 @@ const Map = () => {
                 mapRef.current = mapInstance;
             }}
         >
-            <TileLayer
-                attribution='&copy; <a href "http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <Layers />
+            <ZoomControl position='topright'/>
             <MapEvents />
             {marker && (
                 <Marker

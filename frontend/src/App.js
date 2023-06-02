@@ -1,15 +1,17 @@
 import "./index.css";
-import { BrowserRouter as Router } from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Map from "./components/map/map";
 import Header from "./components/header/header";
 
 function App() {
     return (
         <>
-            <Header />
-            <Router>
-                <Map />
-            </Router>
+            <BrowserRouter>
+                <Header />
+                <Routes>
+                    <Route path='/' element={<Map />}/>
+                </Routes>
+            </BrowserRouter>
         </>
     );
 }

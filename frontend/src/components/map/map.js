@@ -6,56 +6,55 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
 
-const Map = () => {
+const MapEvents = ({ setMarkers, setShowLabel, setLabelPosition }) => {
     const navigate = useNavigate();
+    const map = useMapEvents({
+        click: (e) => {
+            const newMarker = e.latlng;
+            setMarkers((oldMarkers) => {
+                if (oldMarkers.length > 0 && oldMarkers[0].lat === newMarker.lat && oldMarkers[0].lng === newMarker.lng) {
+                    navigate(`#map=${map.getZoom()}`);
+                    return [];
+                } else {
+                    navigate(`#map=${map.getZoom()}/${newMarker.lat}/${newMarker.lng}`);
+                    return [newMarker];
+                }
+            });
+        },
+        mousemove: (e) => {
+            setLabelPosition(e.latlng);
+        },
+        dblclick: () => {
+            setShowLabel(showLabel => !showLabel);
+        },
+    });
+    return null;
+};
+
+const MapMarker = ({ position, showLabel }) => (
+    <Marker position={position}>
+        {showLabel && (
+            <Popup>Lat: {position.lat}, Lng: {position.lng}</Popup>
+        )}
+    </Marker>
+);
+
+const Map = () => {
     const location = useLocation();
     const [markers, setMarkers] = useState([]);
     const [labelPosition, setLabelPosition] = useState(null);
     const [showLabel, setShowLabel] = useState(false);
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const savedMarkers = params.get('markers');
-        if (savedMarkers) {
-            setMarkers(JSON.parse(savedMarkers));
+        const hash = location.hash.replace('#', '');
+        const parts = hash.split('/');
+        if (parts.length === 4 && parts[0] === 'map') {
+            const zoom = Number(parts[1]);
+            const lat = Number(parts[2]);
+            const lng = Number(parts[3]);
+            setMarkers(oldMarkers => [...oldMarkers, { lat, lng }]);
         }
-    }, [location.search]);
-
-    const MapEvents = () => {
-        const map = useMapEvents({
-            click: (e) => {
-                const newMarker = e.latlng;
-                setMarkers((oldMarkers) => {
-                    const updatedMarkers = [...oldMarkers, newMarker];
-                    navigate(`?markers=${JSON.stringify(updatedMarkers)}`);
-                    return updatedMarkers;
-                });
-            },
-            mousemove: (e) => {
-                setLabelPosition(e.latlng);
-            },
-            dblclick: () => {
-                setShowLabel(!showLabel);
-            },
-            map: {
-                whenReady: (map) => {
-                    L.latlngGraticule({
-                        font: '12px Sans-Serif',
-                        color: '#333',
-                        opacity: 0.8,
-                        showLabel: true,
-                        zoomInterval: [
-                            {start: 2, end: 3, interval: 30},
-                            {start: 4, end: 4, interval: 10},
-                            {start: 5, end: 7, interval: 5},
-                            {start: 8, end: 10, interval: 1}
-                        ]
-                    }).addTo(map);
-                }
-            }
-        });
-        return null;
-    };
+    }, [location.hash]);
 
     return (
         <MapContainer
@@ -69,18 +68,12 @@ const Map = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {markers.map((position, idx) =>
-                <Marker key={idx} position={position}>
-                    {(showLabel && position === markers[markers.length - 1]) && (
-                        <Popup>Lat: {position.lat}, Lng: {position.lng}</Popup>
-                    )}
-                </Marker>
+                <MapMarker key={idx} position={position} showLabel={showLabel && position === markers[markers.length - 1]} />
             )}
             {labelPosition && showLabel && (
-                <Marker position={labelPosition}>
-                    <Popup>Lat: {labelPosition.lat}, Lng: {labelPosition.lng}</Popup>
-                </Marker>
+                <MapMarker position={labelPosition} showLabel={true} />
             )}
-            <MapEvents />
+            <MapEvents setMarkers={setMarkers} setShowLabel={setShowLabel} setLabelPosition={setLabelPosition} />
         </MapContainer>
     );
 };

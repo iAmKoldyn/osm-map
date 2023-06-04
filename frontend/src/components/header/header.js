@@ -13,7 +13,6 @@ const Header = () => {
 
                 <div className='header__btn-block'>
                     <button className='header__btn'>Загрузить снимок</button>
-                    <button className='header__btn'>Поделиться</button>
                 </div>
             </div>
         </header>

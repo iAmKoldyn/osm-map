@@ -20,15 +20,6 @@ const Map = () => {
     const [center, setCenter] = useState([20, 15]);
     const mapRef = React.useRef(null);
 
-    useEffect(() => {
-        const hash = location.hash.replace('#', '');
-        const parts = hash.split('/');
-        if (parts.length === 3 && parts[0] === 'map') {
-            setZoom(Number(parts[1]));
-            setCenter([Number(parts[2]), Number(parts[3])]);
-        }
-    }, [location.hash]);
-
     const defaultMarkerIcon = new L.Icon({
         iconUrl: markerIcon,
         iconRetinaUrl: markerIcon2X,
@@ -62,6 +53,10 @@ const Map = () => {
             },
         });
 
+        useEffect(() => {
+            mapRef.current = map;
+        }, [map]);
+
         return null;
     };
 
@@ -71,9 +66,6 @@ const Map = () => {
             center={center}
             zoom={zoom}
             scrollWheelZoom={true}
-            whenCreated={(mapInstance) => {
-                mapRef.current = mapInstance;
-            }}
         >
             <Layers />
             <ZoomControl position='topright'/>
@@ -81,7 +73,22 @@ const Map = () => {
             {marker && (
                 <Marker
                     position={marker}
+                    draggable={true}
                     eventHandlers={{
+                        drag: (e) => {
+                            const newMarker = e.target;
+                            setMarker(newMarker.getLatLng());
+                            if (mapRef.current) {
+                                navigate(`#map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                            }
+                        },
+                        dragend: (e) => {
+                            const newMarker = e.target;
+                            setMarker(newMarker.getLatLng());
+                            if (mapRef.current) {
+                                navigate(`#map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                            }
+                        },
                         dblclick: () => {
                             setMarker(null);
                         },

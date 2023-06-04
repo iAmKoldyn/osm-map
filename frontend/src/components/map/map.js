@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-graticule';
-import {MapContainer, Marker, Popup, useMapEvents, ZoomControl} from 'react-leaflet';
+import { MapContainer, Marker, Popup, useMapEvents, ZoomControl } from 'react-leaflet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
 import Layers from "./layers";
 import markerIcon from '../../assets/images/marker-icon.png';
 import markerIcon2X from '../../assets/images/marker-icon-2x.png';
 import markerShadow from '../../assets/images/marker-shadow.png';
+import ShareLocationButton from "./share-location-button";
 
 const Map = () => {
     const navigate = useNavigate();
@@ -94,7 +95,9 @@ const Map = () => {
                         },
                     }}
                 >
-                    <Popup>A pretty CSS3 popup. <br /> Easily customizable.</Popup>
+                    <Popup>Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
+                        <ShareLocationButton />
+                    </Popup>
                 </Marker>
             )}
             {showLabel && labelPosition && (

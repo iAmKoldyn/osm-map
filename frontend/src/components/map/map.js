@@ -17,8 +17,6 @@ const Map = () => {
     const [marker, setMarker] = useState(null);
     const [labelPosition, setLabelPosition] = useState(null);
     const [showLabel, setShowLabel] = useState(false);
-    const [zoom, setZoom] = useState(0);
-    const [center, setCenter] = useState([20, 15]);
     const mapRef = React.useRef(null);
 
     const defaultMarkerIcon = new L.Icon({
@@ -35,22 +33,48 @@ const Map = () => {
 
     L.Marker.prototype.options.icon = defaultMarkerIcon;
 
+    const parseUrlParams = () => {
+        const params = new URLSearchParams(location.search);
+        const mapParam = params.get('map');
+        if (mapParam) {
+            const [altitude, latitude, longitude] = mapParam.split('/');
+            return {
+                zoom: parseInt(altitude),
+                center: [parseFloat(latitude), parseFloat(longitude)],
+            };
+        }
+        return {
+            zoom: 0,
+            center: [20, 15],
+        };
+    };
+
+    const { zoom: initialZoom, center: initialCenter } = parseUrlParams();
+    const [zoom, setZoom] = useState(initialZoom);
+    const [center, setCenter] = useState(initialCenter);
+
+    useEffect(() => {
+        const { zoom, center } = parseUrlParams();
+        setZoom(zoom);
+        setCenter(center);
+    }, [location]);
+
     const MapEvents = () => {
         const map = useMapEvents({
             click: (e) => {
                 setMarker(e.latlng);
-                navigate(`#map=${map.getZoom()}/${e.latlng.lat}/${e.latlng.lng}`);
+                navigate(`?map=${zoom}/${e.latlng.lat}/${e.latlng.lng}`);
             },
             mousemove: (e) => {
                 setLabelPosition(e.latlng);
             },
             zoomend: () => {
                 setZoom(map.getZoom());
-                navigate(`#map=${map.getZoom()}/${center[0]}/${center[1]}`);
+                navigate(`?map=${map.getZoom()}/${center[0]}/${center[1]}`);
             },
             moveend: () => {
                 setCenter([map.getCenter().lat, map.getCenter().lng]);
-                navigate(`#map=${map.getZoom()}/${map.getCenter().lat}/${map.getCenter().lng}`);
+                navigate(`?map=${map.getZoom()}/${map.getCenter().lat}/${map.getCenter().lng}`);
             },
         });
 
@@ -61,52 +85,52 @@ const Map = () => {
         return null;
     };
 
-    return (
-        <MapContainer
-            className="map-container"
-            center={center}
-            zoom={zoom}
-            scrollWheelZoom={true}
-        >
-            <Layers />
-            <ZoomControl position='topright'/>
-            <MapEvents />
-            {marker && (
-                <Marker
-                    position={marker}
-                    draggable={true}
-                    eventHandlers={{
-                        drag: (e) => {
-                            const newMarker = e.target;
-                            setMarker(newMarker.getLatLng());
-                            if (mapRef.current) {
-                                navigate(`#map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
-                            }
-                        },
-                        dragend: (e) => {
-                            const newMarker = e.target;
-                            setMarker(newMarker.getLatLng());
-                            if (mapRef.current) {
-                                navigate(`#map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
-                            }
-                        },
-                        dblclick: () => {
-                            setMarker(null);
-                        },
-                    }}
-                >
-                    <Popup>Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
-                        <ShareLocationButton />
-                    </Popup>
-                </Marker>
-            )}
-            {showLabel && labelPosition && (
-                <Marker position={labelPosition}>
-                    <Popup>{`${labelPosition.lat.toFixed(2)}, ${labelPosition.lng.toFixed(2)}`}</Popup>
-                </Marker>
-            )}
-        </MapContainer>
-    );
+return (
+    <MapContainer
+        className="map-container"
+        center={center}
+        zoom={zoom}
+        scrollWheelZoom={true}
+    >
+        <Layers />
+        <ZoomControl position='topright' />
+        <MapEvents />
+        {marker && (
+            <Marker
+                position={marker}
+                draggable={true}
+                eventHandlers={{
+                    drag: (e) => {
+                        const newMarker = e.target;
+                        setMarker(newMarker.getLatLng());
+                        if (mapRef.current) {
+                            navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                        }
+                    },
+                    dragend: (e) => {
+                        const newMarker = e.target;
+                        setMarker(newMarker.getLatLng());
+                        if (mapRef.current) {
+                            navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                        }
+                    },
+                    dblclick: () => {
+                        setMarker(null);
+                    },
+                }}
+            >
+                <Popup>Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
+                    <ShareLocationButton />
+                </Popup>
+            </Marker>
+        )}
+        {showLabel && labelPosition && (
+            <Marker position={labelPosition}>
+                <Popup>{`${labelPosition.lat.toFixed(2)}, ${labelPosition.lng.toFixed(2)}`}</Popup>
+            </Marker>
+        )}
+    </MapContainer>
+);
 };
 
 export default Map;

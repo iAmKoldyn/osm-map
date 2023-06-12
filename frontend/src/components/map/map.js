@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-graticule';
-import { MapContainer, Marker, Popup, useMapEvents, ZoomControl } from 'react-leaflet';
+import { MapContainer, Marker, Popup, useMapEvents, ZoomControl, ImageOverlay, Rectangle } from 'react-leaflet';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './index.css';
 import Layers from "./layers";
 import markerIcon from '../../assets/images/marker-icon.png';
@@ -85,52 +86,96 @@ const Map = () => {
         return null;
     };
 
-return (
-    <MapContainer
-        className="map-container"
-        center={center}
-        zoom={zoom}
-        scrollWheelZoom={true}
-    >
-        <Layers />
-        <ZoomControl position='topright' />
-        <MapEvents />
-        {marker && (
-            <Marker
-                position={marker}
-                draggable={true}
-                eventHandlers={{
-                    drag: (e) => {
-                        const newMarker = e.target;
-                        setMarker(newMarker.getLatLng());
-                        if (mapRef.current) {
-                            navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
-                        }
-                    },
-                    dragend: (e) => {
-                        const newMarker = e.target;
-                        setMarker(newMarker.getLatLng());
-                        if (mapRef.current) {
-                            navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
-                        }
-                    },
-                    dblclick: () => {
-                        setMarker(null);
-                    },
-                }}
+    const [imageBounds, setImageBounds] = useState(null);
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await axios.post('http://localhost:5000/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            const {west, south, east, north} = response.data;
+            console.log(`West: ${west}, South: ${south}, East: ${east}, North: ${north}`); // Log the coordinates to the console
+            setImageBounds([[west, south], [east, north]]);
+        }).catch(error => {
+            console.error("Error uploading file: ", error);
+        });
+    }
+
+    useEffect(() => {
+        console.log(imageBounds);
+    }, [imageBounds]);
+
+
+    return (
+        <div>
+            <input type="file" onChange={handleFileChange} />
+            <MapContainer
+                className="map-container"
+                center={center}
+                zoom={zoom}
+                scrollWheelZoom={true}
             >
-                <Popup>Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
-                    <ShareLocationButton />
-                </Popup>
-            </Marker>
-        )}
-        {showLabel && labelPosition && (
-            <Marker position={labelPosition}>
-                <Popup>{`${labelPosition.lat.toFixed(2)}, ${labelPosition.lng.toFixed(2)}`}</Popup>
-            </Marker>
-        )}
-    </MapContainer>
-);
+                <Layers />
+                <ZoomControl position='topright' />
+                <MapEvents />
+                {marker && (
+                    <Marker
+                        position={marker}
+                        draggable={true}
+                        eventHandlers={{
+                            drag: (e) => {
+                                const newMarker = e.target;
+                                setMarker(newMarker.getLatLng());
+                                if (mapRef.current) {
+                                    navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                                }
+                            },
+                            dragend: (e) => {
+                                const newMarker = e.target;
+                                setMarker(newMarker.getLatLng());
+                                if (mapRef.current) {
+                                    navigate(`?map=${mapRef.current.getZoom()}/${newMarker.getLatLng().lat}/${newMarker.getLatLng().lng}`);
+                                }
+                            },
+                            dblclick: () => {
+                                setMarker(null);
+                            },
+                        }}
+                    >
+                        <Popup>Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
+                            <ShareLocationButton />
+                        </Popup>
+                    </Marker>
+                )}
+
+                {showLabel && labelPosition && (
+                    <Marker position={labelPosition}>
+                        <Popup>{`${labelPosition.lat.toFixed(2)}, ${labelPosition.lng.toFixed(2)}`}</Popup>
+                    </Marker>
+                )}
+
+                {imageBounds && (
+                    <ImageOverlay
+                        url="/home/iamkoldyn/Загрузки/Sirius internship/uploads/JL1KF01A_PMS04_20210713151556_200055411_101_0020_001_L3A_MSS.tif"  // Replace with the path to your image
+                        bounds={imageBounds}
+                    />
+                )}
+
+                {imageBounds && (
+                    <Rectangle
+                        bounds={imageBounds}
+                        color="#ff7800"
+                        weight={1}
+                    />
+                )}
+            </MapContainer>
+        </div>
+    );
 };
 
 export default Map;

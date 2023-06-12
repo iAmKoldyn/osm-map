@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdeecbbf-fb16-4783-9a03-691411415a8b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/map/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/map/map.js" afterDir="false" />
-    </list>
+    <list default="true" id="cdeecbbf-fb16-4783-9a03-691411415a8b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,7 +79,7 @@
       <workItem from="1686439864170" duration="605000" />
       <workItem from="1686522895947" duration="221000" />
       <workItem from="1686525639390" duration="4796000" />
-      <workItem from="1686560966384" duration="8100000" />
+      <workItem from="1686560966384" duration="8485000" />
     </task>
     <servers />
   </component>

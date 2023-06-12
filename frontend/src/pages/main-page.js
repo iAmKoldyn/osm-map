@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Map from "../components/map/map";
 import Header from "../components/header/header";
 import Modal from "../components/modal/modal";
@@ -8,11 +8,17 @@ import LoadScreenModalPage from "./load-screen-modal-page";
 const MainPage = () => {
     const [modalActive, setModalActive] = useState(false);
     const [btnModifier, setBtnModifier] = useState('');
+    const [imageBounds, setImageBounds] = useState(null);
     let modalContent = null;
 
     switch (btnModifier){
         case ('load-screen'):
-            modalContent = <LoadScreenModalPage />
+            modalContent = <LoadScreenModalPage
+                imageBounds={imageBounds}
+                setImageBounds={setImageBounds}
+                btnIsClicked={modalActive}
+                setBtnIsClicked={setModalActive}
+            />
             break;
         case ('add-layer'):
             modalContent = <AddLayersModalPage btnIsClicked={modalActive} setBtnIsClicked={setModalActive}/>
@@ -27,7 +33,7 @@ const MainPage = () => {
                 btnModifier={btnModifier}
                 setBtnModifier={setBtnModifier}
             />
-            <Map/>
+            <Map imageBounds={imageBounds} setImageBounds={setImageBounds}/>
             <Modal active={modalActive} setActive={setModalActive}>
                 {modalContent}
             </Modal>

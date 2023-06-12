@@ -3,7 +3,7 @@ import logo from "../../assets/images/SR_data_logoline_whi.svg";
 import './index.css';
 import {Link} from "react-router-dom";
 
-const Header = () => {
+const Header = ({btnIsClicked, setBtnIsClicked, btnModifier, setBtnModifier}) => {
     return (
         <header>
             <div className='header__wrapper'>
@@ -12,7 +12,18 @@ const Header = () => {
                 </div>
 
                 <div className='header__btn-block'>
-                    <button className='header__btn'>Загрузить снимок</button>
+                    <button className='header__btn' onClick={() => {
+                        setBtnIsClicked(true);
+                        setBtnModifier('load-screen');
+                    }}>
+                        Загрузить снимок
+                    </button>
+                    <button className='header__btn' onClick={() => {
+                        setBtnIsClicked(true);
+                        setBtnModifier('add-layer');
+                    }}>
+                        Добавить слой
+                    </button>
                 </div>
             </div>
         </header>

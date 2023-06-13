@@ -1,5 +1,10 @@
-.map-container {
+.map-wrapper {
+    width: 100vw;
     height: 100vh;
+}
+
+.map-container {
+    height: 100%;
 }
 
 .leaflet-attribution-flag {

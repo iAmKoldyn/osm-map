@@ -86,7 +86,7 @@ const Map = ({imageBounds, setImageBounds}) => {
     };
 
     return (
-        <div>
+        <div className='map-wrapper'>
             <MapContainer
                 className="map-container"
                 center={center}

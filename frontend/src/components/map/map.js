@@ -85,13 +85,21 @@ const Map = ({imageBounds, setImageBounds}) => {
         return null;
     };
 
+    const bounds = [
+        [Infinity, -Infinity],
+        [-Infinity, Infinity],
+    ];
+
     return (
         <div className='map-wrapper'>
             <MapContainer
                 className="map-container"
                 center={center}
+                minZoom={3}
                 zoom={zoom}
                 scrollWheelZoom={true}
+                maxBounds={bounds}
+                maxBoundsViscosity={1.0}
             >
                 <Layers />
                 <ZoomControl position='topright' />

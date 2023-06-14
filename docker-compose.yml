@@ -1,0 +1,27 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+    environment:
+      - FLASK_APP=server.py
+      - FLASK_RUN_HOST=0.0.0.0
+  frontend:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+  ngrok:
+    build: ./ngrok
+    depends_on:
+      - backend
+    environment:
+      - NGROK_PORT=backend:5000
+      - NGROK_CONFIG=/etc/ngrok/ngrok.yml
+      - NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN}
+    volumes:
+      - ./ngrok.yml:/etc/ngrok/ngrok.yml

@@ -23,21 +23,18 @@ const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
                 <input
                     className='add-layers__input'
                     type="text"
-                    value={nameValue}
                     onChange={event => setNameValue(event.target.value)}
                     placeholder='Введите название слоя'
                 />
                 <input
                     className='add-layers__input'
                     type="text"
-                    value={urlValue}
                     onChange={event => setUrlValue(event.target.value)}
                     placeholder='Введите url слоя'
                 />
                 <input
                     className='add-layers__input'
                     type="text"
-                    value={atrValue}
                     onChange={event => setAtrValue(event.target.value)}
                     placeholder='Введите attribution слоя'
                 />

@@ -4,6 +4,8 @@
 .pnp.js
 
 /coverage
+/backend/__pycache__/
+/backend/uploads/
 
 /build
 

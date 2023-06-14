@@ -1,0 +1,4 @@
+tunnels:
+  backend:
+    addr: 5000
+    proto: http

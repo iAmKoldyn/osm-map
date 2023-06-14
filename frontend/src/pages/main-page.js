@@ -6,6 +6,7 @@ import AddLayersModalPage from "./add-layers-modal-page";
 import LoadScreenModalPage from "./load-screen-modal-page";
 
 const MainPage = () => {
+    const mapRef = React.useRef(null);
     const [modalActive, setModalActive] = useState(false);
     const [btnModifier, setBtnModifier] = useState('');
     const [imageBounds, setImageBounds] = useState(null);
@@ -18,6 +19,7 @@ const MainPage = () => {
                 setImageBounds={setImageBounds}
                 btnIsClicked={modalActive}
                 setBtnIsClicked={setModalActive}
+                mapRef={mapRef}
             />
             break;
         case ('add-layer'):
@@ -33,7 +35,7 @@ const MainPage = () => {
                 btnModifier={btnModifier}
                 setBtnModifier={setBtnModifier}
             />
-            <Map imageBounds={imageBounds} setImageBounds={setImageBounds}/>
+            <Map imageBounds={imageBounds} setImageBounds={setImageBounds} mapRef={mapRef}/>
             <Modal active={modalActive} setActive={setModalActive}>
                 {modalContent}
             </Modal>

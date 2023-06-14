@@ -12,11 +12,19 @@ CORS(app)
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+ALLOWED_EXTENSIONS = {'tif'}
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
     filename = secure_filename(file.filename)
+
+    # Check file extension
+    extension = filename.rsplit('.', 1)[1].lower()
+    if extension not in ALLOWED_EXTENSIONS:
+        return {'error': 'Invalid file extension. Only .tif files are allowed.'}, 400
+
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
 
@@ -39,6 +47,7 @@ def upload_file():
         'east': east,
         'north': north
     }
+
 
 if __name__ == '__main__':
     app.run(debug=True)

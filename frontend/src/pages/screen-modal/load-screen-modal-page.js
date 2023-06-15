@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {ThreeDots} from "react-loader-spinner";
-import {Rectangle} from "react-leaflet";
+import './index.css';
 
 const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnIsClicked, mapRef}) => {
     const [uploading, setUploading] = useState(false);
@@ -50,8 +49,16 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
     }, [imageBounds]);
 
     return (
-        <div>
-            <input type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+        <div className="load-screen__content">
+            <h3 className='load-screen__title'>Загрузка снимка</h3>
+            <p className='load-screen__description'>
+                Чтобы загрузить снимок, кликните на кнопку "Выберите файл". <br/>После чего выберите снимок,
+                который хотите отобразить на карте. <br/>
+                <strong>Важно: Снимок должен иметь формат .tiff</strong>
+            </p>
+            <div className='load-screen__input-form'>
+                <input className='load-screen__input' type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+            </div>
         </div>
     );
 };

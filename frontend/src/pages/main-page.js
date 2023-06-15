@@ -119,6 +119,11 @@ const MainPage = () => {
                         </ul>
                     </div>
                 )}
+                {searchMarker && (
+                    <div className="ui__search-marker-block">
+                        <button className='ui__search-marker-delete' onClick={removeSearchMarker}>Удалить маркер поиска</button>
+                    </div>
+                )}
 
                 <div className="ui__modal-buttons modal-buttons">
                     <button className='modal-buttons__btn' onClick={() => {

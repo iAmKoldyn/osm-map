@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './index.css'
-import {layers} from "../__data__";
+import {layers} from "../../__data__";
 
 const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
     const [nameValue, setNameValue] = useState();
@@ -18,7 +18,11 @@ const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
 
     return (
         <div className='add-layers__wrapper'>
-            <h2>Добавление слоя</h2>
+            <h3 className='add-layers__title'>Добавление слоя</h3>
+            <p className='add-layers__description'>
+                Для добавления слоя вам потребуется дать ему название <strong>(может быть любым)</strong>
+                , а также указать url и attribution слоя.
+            </p>
             <form className='add-layers__form' action="">
                 <input
                     className='add-layers__input'

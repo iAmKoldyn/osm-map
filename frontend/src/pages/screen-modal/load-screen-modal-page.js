@@ -50,9 +50,14 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
 
     return (
         <div className="load-screen__content">
-            <h2 className='load-screen__title'>Загрузка снимка</h2>
+            <h3 className='load-screen__title'>Загрузка снимка</h3>
+            <p className='load-screen__description'>
+                Чтобы загрузить снимок, кликните на кнопку "Выберите файл". <br/>После чего выберите снимок,
+                который хотите отобразить на карте. <br/>
+                <strong>Важно: Снимок должен иметь формат .tiff</strong>
+            </p>
             <div className='load-screen__input-form'>
-                <input type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+                <input className='load-screen__input' type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
             </div>
         </div>
     );

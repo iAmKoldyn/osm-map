@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import Map from "../components/map/map";
-import Header from "../components/header/header";
 import Modal from "../components/modal/modal";
-import AddLayersModalPage from "./add-layers-modal-page";
-import LoadScreenModalPage from "./load-screen-modal-page";
+import AddLayersModalPage from "./layers-modal/add-layers-modal-page";
+import LoadScreenModalPage from "./screen-modal/load-screen-modal-page";
 import {searchForBoundaries} from '../components/map/osmSearch';
 import axios from "axios";
 import useGeolocation from "../components/map/useGeolocation";
 import searchIcon from './../assets/images/loopa-icon.png';
+import './index.css'
 
 const MainPage = () => {
     const mapRef = React.useRef(null);
@@ -117,7 +117,7 @@ const MainPage = () => {
 
                 <div className="ui__geo-block geo">
                     <button className='geo_button' onClick={() => setIsLocating(!isLocating)}>
-                        {isLocating ? 'Удалить маркер с моего местоположения' : 'Показать моё местоположение'}
+                        {isLocating ? 'Скрыть мое местоположение' : 'Показать мое местоположение'}
                     </button>
                 </div>
             </div>

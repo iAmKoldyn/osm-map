@@ -7,6 +7,11 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
 
     const handleFileChange = (setUploading, setImageBounds, mapRef) => async (event) => {
 
+        if (!event.target.files[0]) {
+            console.error('No file selected');
+            return;
+        }
+
         const file = event.target.files[0];
 
         // Check file extension

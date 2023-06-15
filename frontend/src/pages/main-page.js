@@ -9,6 +9,7 @@ import useGeolocation from "../components/map/useGeolocation";
 import searchIcon from './../assets/images/loopa-icon.png';
 import './index.css'
 
+
 const MainPage = () => {
     const mapRef = React.useRef(null);
     const [modalActive, setModalActive] = useState(false);
@@ -46,6 +47,7 @@ const MainPage = () => {
                 const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${process.env.REACT_APP_API_KEY}`);
                 if (response.data && response.data.results) {
                     setSuggestions(response.data.results.map(result => result.formatted));
+                    setShowList(true);
                 }
             } catch (error) {
                 console.error('Error fetching suggestions: ', error);
@@ -56,10 +58,11 @@ const MainPage = () => {
         }
     };
 
-    const handleSearch = () => {
-        setShowList(!showList);
-        if (searchQuery.trim() !== '') {
-            searchForBoundaries(searchQuery, mapRef, setSearchMarker, searchMarker);
+    const handleSearch = (query) => {
+        query = query || searchQuery;
+        setShowList(false);
+        if (query.trim() !== '') {
+            searchForBoundaries(query, mapRef, setSearchMarker, searchMarker);
         }
     };
 
@@ -68,6 +71,11 @@ const MainPage = () => {
             mapRef.current.removeLayer(searchMarker);
             setSearchMarker(null);
         }
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        searchForBoundaries(suggestion, mapRef, setSearchMarker, searchMarker);
+        setShowList(false);
     };
 
     return (
@@ -86,15 +94,25 @@ const MainPage = () => {
                                 fetchSuggestions(e.target.value);
                             }}
                         />
-                        <button className='search__btn' onClick={handleSearch}>Найти</button>
+                        <button className='search__btn' onClick={() => handleSearch()}>Найти</button>
                     </div>
                     {/*<button onClick={removeSearchMarker}>Remove Search Marker</button>*/}
                 </div>
+
                 {showList && (
                     <div className='ui__suggestions'>
                         <ul className='search__suggestions-list'>
                             {suggestions.map((suggestion, index) => (
-                                <li className='search__suggestions-item' key={index}>{suggestion}</li>
+                                <li
+                                    className='search__suggestions-item'
+                                    key={index}
+                                    onClick={() => {
+                                        setSearchQuery(suggestion);
+                                        handleSearch(suggestion);
+                                    }}
+                                >
+                                    {suggestion}
+                                </li>
                             ))}
                         </ul>
                     </div>
@@ -114,6 +132,7 @@ const MainPage = () => {
                         Добавить слой
                     </button>
                 </div>
+
 
                 <div className="ui__geo-block geo">
                     <button className='geo_button' onClick={() => setIsLocating(!isLocating)}>

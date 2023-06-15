@@ -155,8 +155,7 @@ const Map = ({setImageBounds, imageBounds, mapRef, locationAccuracy, userLocatio
                 {imageBounds && <Rectangle bounds={imageBounds} color="#ff7800" weight={1}/>}
 
                 {userLocation && (
-                    <Circle center={userLocation} radius={locationAccuracy} smoothFactor={10} noClip={true}/>
-                )}
+                    <Marker position={userLocation} />)}
             </MapContainer>
         </div>
     );

@@ -117,7 +117,7 @@ const MainPage = () => {
 
                 <div className="ui__geo-block geo">
                     <button className='geo_button' onClick={() => setIsLocating(!isLocating)}>
-                        {isLocating ? 'Скрыть мое местоположение' : 'Показать мое местоположение'}
+                        {isLocating ? 'Скрыть текущее местоположение' : 'Показать текущее местоположение'}
                     </button>
                 </div>
             </div>

@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './index.css';
 
-const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnIsClicked, mapRef}) => {
+const LoadScreenModalPage = ({ imageBounds, setImageBounds, btnIsClicked, setBtnIsClicked, mapRef }) => {
     const [uploading, setUploading] = useState(false);
+    const [invalidFormat, setInvalidFormat] = useState(false);
 
-    const handleFileChange = (setUploading, setImageBounds, mapRef) => async (event) => {
-
+    const handleFileChange = async (event) => {
         if (!event.target.files[0]) {
             console.error('No file selected');
             return;
@@ -18,6 +18,7 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
         const extension = file.name.split('.').pop().toLowerCase();
         if (extension !== 'tif') {
             console.error('Invalid file extension. Only .tif files are allowed.');
+            setInvalidFormat(true);
             return;
         }
 
@@ -28,8 +29,8 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
         try {
             const response = await axios.post('http://localhost:5000/upload', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Content-Type': 'multipart/form-data',
+                },
             });
 
             const { west, south, east, north } = response.data;
@@ -40,12 +41,14 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
             const centerLng = (west + east) / 2;
 
             if (mapRef.current) {
-                mapRef.current.flyTo([centerLat, centerLng], 15, { duration: 0.3 });
+                mapRef.current.flyTo([centerLat, centerLng], 15, { duration: 0.1 });
             }
+
+            setBtnIsClicked(false);
         } catch (error) {
             console.error('Error uploading file: ', error);
         } finally {
-            setUploading(false); // End loading
+            setUploading(false);
         }
     };
 
@@ -55,14 +58,21 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
 
     return (
         <div className="load-screen__content">
-            <h3 className='load-screen__title'>Загрузка снимка</h3>
-            <p className='load-screen__description'>
-                Чтобы загрузить снимок, кликните на кнопку "Выберите файл". <br/>После чего выберите снимок,
-                который хотите отобразить на карте. <br/>
+            <h3 className="load-screen__title">Загрузка снимка</h3>
+            <p className="load-screen__description">
+                Чтобы загрузить снимок, кликните на кнопку "Выберите файл". <br />После чего выберите снимок,
+                который хотите отобразить на карте. <br />
                 <strong>Важно: Снимок должен иметь формат .tiff</strong>
+                {invalidFormat && (<p className="load-screen__invalid-format">Неверный формат файла. Разрешены только файлы .tif</p>)}
             </p>
-            <div className='load-screen__input-form'>
-                <input className='load-screen__input' type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+            <div className="load-screen__input-form">
+                <input
+                    className="load-screen__input"
+                    type="file"
+                    accept=".tif"
+                    onChange={handleFileChange}
+                    onClick={() => setInvalidFormat(false)}
+                />
             </div>
         </div>
     );

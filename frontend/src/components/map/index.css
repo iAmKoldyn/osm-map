@@ -14,3 +14,8 @@
 .leaflet-top.leaflet-left {
     display: none;
 }
+
+.leaflet-top.leaflet-right {
+    position: absolute;
+    top: 40%;
+}

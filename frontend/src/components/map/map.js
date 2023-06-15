@@ -1,35 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-graticule';
-import { MapContainer, Marker, Popup, useMapEvents, ZoomControl, Rectangle, Circle } from 'react-leaflet';
-import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import {MapContainer, Marker, Popup, useMapEvents, ZoomControl, Rectangle, Circle} from 'react-leaflet';
+import {useNavigate, useLocation} from 'react-router-dom';
 import './index.css';
 import Layers from './layers';
 import markerIcon from '../../assets/images/marker-icon.png';
 import markerIcon2X from '../../assets/images/marker-icon-2x.png';
 import markerShadow from '../../assets/images/marker-shadow.png';
 import ShareLocationButton from './share-location-button';
-import useGeolocation from './useGeolocation';
-import { searchForBoundaries, fetchSuggestions } from './osmSearch';
 
 
-const Map = ({ setImageBounds, imageBounds, mapRef}) => {
+const Map = ({setImageBounds, imageBounds, mapRef, locationAccuracy, userLocation}) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [marker, setMarker] = useState(null);
     const [labelPosition, setLabelPosition] = useState(null);
     const [showLabel, setShowLabel] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [userLocation, setUserLocation] = useState(null);
-    const [locationAccuracy, setLocationAccuracy] = useState(null);
-    const [isLocating, setIsLocating] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchMarker, setSearchMarker] = useState(null);
-    const [suggestions, setSuggestions] = useState([]);
-
-    useGeolocation(isLocating, setUserLocation, setLocationAccuracy, mapRef);
 
     const defaultMarkerIcon = new L.Icon({
         iconUrl: markerIcon,
@@ -62,12 +51,12 @@ const Map = ({ setImageBounds, imageBounds, mapRef}) => {
         };
     };
 
-    const { zoom: initialZoom, center: initialCenter } = parseUrlParams();
+    const {zoom: initialZoom, center: initialCenter} = parseUrlParams();
     const [zoom, setZoom] = useState(initialZoom);
     const [center, setCenter] = useState(initialCenter);
 
     useEffect(() => {
-        const { zoom, center } = parseUrlParams();
+        const {zoom, center} = parseUrlParams();
         setZoom(zoom);
         setCenter(center);
     }, [location]);
@@ -102,70 +91,26 @@ const Map = ({ setImageBounds, imageBounds, mapRef}) => {
         console.log(imageBounds);
     }, [imageBounds]);
 
-    const fetchSuggestions = async (query) => {
-        if (query.trim() !== '') {
-            try {
-                const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${process.env.REACT_APP_API_KEY}`);
-                if (response.data && response.data.results) {
-                    setSuggestions(response.data.results.map(result => result.formatted));
-                }
-            } catch (error) {
-                console.error('Error fetching suggestions: ', error);
-            }
-        } else {
-            setSuggestions([]);
-        }
-    };
-
-    const handleSearch = () => {
-        if (searchQuery.trim() !== '') {
-            searchForBoundaries(searchQuery, mapRef, setSearchMarker, searchMarker);
-        }
-    };
-
-    const removeSearchMarker = () => {
-        if (searchMarker) {
-            mapRef.current.removeLayer(searchMarker);
-            setSearchMarker(null);
-        }
-    };
-
     const bounds = [
         [Infinity, -Infinity],
         [-Infinity, Infinity],
     ];
 
-
     return (
         <div className='map-wrapper'>
-            <button onClick={handleSearch}>Search for Boundaries</button>
-            <button onClick={removeSearchMarker}>Remove Search Marker</button>
-
-            <input type="text" value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value);fetchSuggestions(e.target.value);}}/>
-
-            <button onClick={() => setIsLocating(!isLocating)}>
-                {isLocating ? 'Stop Location' : 'Start Location'}
-            </button>
-
-            <ul>
-                {suggestions.map((suggestion, index) => (
-                    <li key={index}>{suggestion}</li>
-                ))}
-            </ul>
-
-                <MapContainer
-                    className="map-container"
-                    center={center}
-                    minZoom={3}
-                    zoom={zoom}
-                    scrollWheelZoom={true}
-                    maxBounds={bounds}
-                    maxBoundsViscosity={1.0}
-                >
-
-                <Layers />
-                <ZoomControl position="topright" />
-                <MapEvents />
+            <MapContainer
+                className="map-container"
+                center={center}
+                minZoom={3}
+                zoom={zoom}
+                scrollWheelZoom={true}
+                doubleClickZoom={false}
+                maxBounds={bounds}
+                maxBoundsViscosity={1.0}
+            >
+                <Layers/>
+                <ZoomControl position="topright"/>
+                <MapEvents/>
                 {marker && (
                     <Marker
                         position={marker}
@@ -195,8 +140,8 @@ const Map = ({ setImageBounds, imageBounds, mapRef}) => {
                         }}
                     >
                         <Popup>
-                            Lat: {marker.lat} <br /> Lng: {marker.lng} <br />
-                            <ShareLocationButton />
+                            Lat: {marker.lat} <br/> Lng: {marker.lng} <br/>
+                            <ShareLocationButton/>
                         </Popup>
                     </Marker>
                 )}
@@ -207,10 +152,10 @@ const Map = ({ setImageBounds, imageBounds, mapRef}) => {
                     </Marker>
                 )}
 
-                {imageBounds && <Rectangle bounds={imageBounds} color="#ff7800" weight={1} />}
+                {imageBounds && <Rectangle bounds={imageBounds} color="#ff7800" weight={1}/>}
 
                 {userLocation && (
-                    <Circle center={userLocation} radius={locationAccuracy} smoothFactor={10} noClip={true} />
+                    <Circle center={userLocation} radius={locationAccuracy} smoothFactor={10} noClip={true}/>
                 )}
             </MapContainer>
         </div>

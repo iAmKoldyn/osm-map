@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {ThreeDots} from "react-loader-spinner";
-import {Rectangle} from "react-leaflet";
+import './index.css';
 
 const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnIsClicked, mapRef}) => {
     const [uploading, setUploading] = useState(false);
@@ -50,8 +49,11 @@ const LoadScreenModalPage = ({imageBounds, setImageBounds, btnIsClicked, setBtnI
     }, [imageBounds]);
 
     return (
-        <div>
-            <input type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+        <div className="load-screen__content">
+            <h2 className='load-screen__title'>Загрузка снимка</h2>
+            <div className='load-screen__input-form'>
+                <input type="file" onChange={handleFileChange(setUploading, setImageBounds, mapRef)} onClick={() => setBtnIsClicked(false)} />
+            </div>
         </div>
     );
 };

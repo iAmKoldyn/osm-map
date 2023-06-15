@@ -84,6 +84,38 @@
 .search__suggestions-item {
     margin: 8px;
     list-style-type: none;
+    cursor: pointer;
+}
+
+.search__suggestions-item:hover {
+    color: #007bff;
+}
+
+.ui__search-marker-block {
+    display: flex;
+    gap: 10px;
+    height: 40px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ui__search-marker-delete {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    height: 100%;
+    width: 100%;
+    padding: 0 16px;
+    outline: none;
+    border-radius: 9999px;
+    background-color: rgb(255, 255, 255, .7);
+    backdrop-filter: blur(16px);
+    color: black;
+    border: 0;
+}
+
+.ui__search-marker-delete:active {
+    background-color: gray;
+    color: white;
 }
 
 .modal-buttons {

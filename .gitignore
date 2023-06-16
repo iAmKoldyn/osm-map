@@ -6,6 +6,8 @@
 /coverage
 /backend/__pycache__/
 /backend/uploads/
+/backend/test/__pycache__/
+
 
 /build
 

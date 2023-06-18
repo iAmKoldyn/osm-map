@@ -6,12 +6,11 @@ services:
       - 5000:5000
     volumes:
       - ./backend:/app
-      - ./backend/test:/app/test
-      - ./backend/test/test_files:/app/test_files
     environment:
       - FLASK_APP=server.py
       - FLASK_RUN_HOST=0.0.0.0
-    command: sh -c "flask run --host=0.0.0.0 & sleep 5 && pytest"
+    command: sh -c "flask run --host=0.0.0.0"
+
   frontend:
     build: ./frontend
     ports:

@@ -22,9 +22,9 @@ const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
             tempErrors.atr = "Attribution must be between 2 to 30 characters, non-empty and only contain uppercase and lowercase letters";
         }
 
-        if (!urlValue || !/^https:\/\/api.maptiler.com\/tiles\/.+\/\{z\}\/\{x\}\/\{y\}.jpg\?key=.+$/.test(urlValue)) {
+        if (!urlValue || !/^(https?:\/\/)[^\s$.?#].[^\s]*$/.test(urlValue)) {
             formIsValid = false;
-            tempErrors.url = "URL must be in the correct format and non-empty";
+            tempErrors.url = "URL must be non-empty and must be a valid URL";
         }
 
         setErrors(tempErrors);

@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400&display=swap');
+
+.add-layers__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-layers__title {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 24px;
+}
+
+.add-layers__description {
+    font-family: 'Noto Sans', sans-serif;
+    align-self: flex-start;
+    font-size: 16px;
+    color: gray;
+    margin-top: 20px;
+}
+
+.add-layers__form {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    width: 100%;
+    margin-top: 26px;
+    gap: 16px;
+}
+
+.add-layers__input {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    background-color: rgb(255, 255, 255, .7);
+    backdrop-filter: blur(16px);
+    color: black;
+    border: 1px solid gray;
+    outline: none;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.add-layers__btn {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    background-color: #007bff;
+    border-radius: 5px;
+    border: 1px;
+    color: #fff;
+    margin-top: 20px;
+    padding: 12px;
+    width: 40%;
+    outline: none;
+}
+
+.add-layers__btn:hover {
+    background-color: #0062cc;
+}
+
+.error {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+    padding: 0 12px 12px;
+    color: red;
+}

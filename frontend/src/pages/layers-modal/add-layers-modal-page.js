@@ -17,11 +17,6 @@ const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
             tempErrors.name = "Name must be between 3 to 10 characters, non-empty and only contain uppercase and lowercase letters";
         }
 
-        if (!atrValue || atrValue.length < 2 || atrValue.length > 30 || !/^[A-Za-z]+$/.test(atrValue)) {
-            formIsValid = false;
-            tempErrors.atr = "Attribution must be between 2 to 30 characters, non-empty and only contain uppercase and lowercase letters";
-        }
-
         if (!urlValue || !/^(https?:\/\/)[^\s$.?#].[^\s]*$/.test(urlValue)) {
             formIsValid = false;
             tempErrors.url = "URL must be non-empty and must be a valid URL";
@@ -63,7 +58,7 @@ const AddLayersModalPage = ({btnIsClicked, setBtnIsClicked}) => {
                     type="text"
                     value={atrValue}
                     onChange={event => setAtrValue(event.target.value)}
-                    placeholder='Введите attribution слоя'
+                    placeholder='Введите attribution слоя (опицонально)'
                 />
                 {errors.atr && <div className="error">{errors.atr}</div>}
                 <input
